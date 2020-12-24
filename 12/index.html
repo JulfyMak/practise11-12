@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Practice Ajax</title>
+	</head>
+	<body>
+		<pre id="json_output"></pre>
+	</body>
+</html>
+
+<script type="text/javascript">
+	const requestURL = 'https://jsonplaceholder.typicode.com/users';
+	function sendRequest(method, url, body = null) {
+	   return fetch(url).then( response => {
+	       return response.json();
+	   })
+	}
+
+	sendRequest('GET', requestURL).then( data => {
+	   console.log(data);
+		 jsonPrettyHighlightToId(data, 'json_output');
+
+	}).catch( error => console.error(error));
+
+	function jsonPrettyHighlightToId(jsonobj, id_to_send_to) {
+	    var json = JSON.stringify(jsonobj, undefined, 2);
+
+	    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	    json = json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+	        var cls = 'color: darkorange;';
+	        if (/^"/.test(match)) {
+	            if (/:$/.test(match)) {
+	                cls = 'color: blue;';
+	            } else {
+	                cls = 'color: black;';
+	            }
+	        } else if (/true|false/.test(match)) {
+	            cls = 'color: blue;';
+	        } else if (/null/.test(match)) {
+	            cls = 'color: magenta;';
+	        }
+	        return '<span style="' + cls + '">' + match + '</span>';
+	    });
+
+	    document.getElementById(id_to_send_to).innerHTML = json;
+	}
+
+</script>
